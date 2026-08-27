@@ -4,7 +4,7 @@
 data_directory = "programs/2015/Python/07/input.txt"
 variable_searched = "a"
 
-linkage_cache = {}
+linkage_cache: dict[str, int] = {}
 
 variable_list = ["a"] # True input
 # variable_list = ["d", "e", "f", "g", "h", "i", "x", "y"] # Sample testing
