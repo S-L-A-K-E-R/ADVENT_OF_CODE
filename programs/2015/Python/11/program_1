@@ -1,0 +1,151 @@
+# --- ADVENT OF CODE ---
+#  
+# 2025-11
+# "Corporate Policy"
+# 
+# Date: 2026/09/02 
+# ----------------------
+
+# --- LIBRAIRIES & DEPENDENCIES
+
+
+
+# --- GLOBAL VARIABLES
+
+STARTING_PASSWORD = "cqjxxyzz"
+
+#INPUT_START_PASSWORD_1 = "cqjxjnds"
+#INPUT_START_PASSWORD_2 = "cqjxxyzz"
+#SAMPLE_START_PASSWORD_1 = "abcdefgh"
+#SAMPLE_START_PASSWORD_2 = "ghijklmn"
+
+
+
+# --- FUNCTIONS
+
+def r_increment_password(password:str) -> str:
+
+    final_password:str = password
+
+    # For stopping advanced recursive calls for the: "zzz...zz" input
+    if len(password) == 0:
+        return ""
+
+
+    # From: [char] > [int] > [char]
+    next_letter = chr(ord(password[-1])+1) 
+
+    if next_letter > "z":
+        next_letter = "a"
+
+        # --- RECURSIVE CALL: on the ABC > [AB] part (then we add C)    
+        final_password = r_increment_password(final_password[:-1]) + next_letter
+    
+    else:
+        final_password = final_password[:-1] + next_letter
+
+    return final_password
+
+
+def check_3_letters_serie(password:str) -> bool:
+
+    # For an whole input (supposed longer than 2 letters)
+    # 1. We take 3 splits like this: ABCDEF >> [ABC] [BCD] [CDE] [DEF]
+    # 2. Then we check if the [...] split are a serie +1.
+
+    # 1. Split:
+    for index_start_letter in range(0, len(password)-2):
+
+        ord_letter_tab: list[int] = [0] * 3
+        
+        for index, letter in enumerate(password[index_start_letter:index_start_letter+3]):
+            ord_letter_tab[index] = ord(letter)
+
+        # 2. Check:
+        if(ord_letter_tab[0]+1 == ord_letter_tab[1] and ord_letter_tab[1]+1 == ord_letter_tab[2]):
+            return True
+
+    # We checked all the 3-letter split, it's over:
+    return False
+
+
+def check_specific_letter(password:str) -> bool:
+
+    forbidden_letters = "iol"
+
+    if any(letter in password for letter in forbidden_letters):
+        return False
+
+    else:
+        return True
+
+
+def check_2_consecutive(password:str) -> bool:
+
+    pair_counter:int = 0
+    should_skip_next_letter:bool = False
+
+    for index,letter in enumerate(password):
+
+        # Have we explored all cells?
+        if index == len(password)-1:
+            break
+
+        if should_skip_next_letter:
+            should_skip_next_letter = False
+            continue
+        
+        # Otherwise we check: abcde >> (a&b) then (b&c)...
+        elif(letter == password[index+1]):
+            pair_counter += 1
+            should_skip_next_letter = True
+
+            if pair_counter>=2:
+                return True
+
+    return False
+
+
+
+def check_password(password:str) -> bool:
+
+    is_password_valid:bool = check_3_letters_serie(password) and check_specific_letter(password) and check_2_consecutive(password)
+
+    return is_password_valid
+
+
+
+
+
+
+# --- main()
+def main() -> int:
+
+    is_password_correct:bool = False
+    password:str = STARTING_PASSWORD
+
+    print(f"START:\n{password}")
+
+    while(not is_password_correct):
+
+        password = r_increment_password(password)
+        is_password_correct = check_password( password )
+        
+
+    print(f"Working password: {password}")
+
+
+
+    return 0
+
+
+
+
+
+
+
+# --- Main launcher
+if __name__ == "__main__":
+    main()
+
+
