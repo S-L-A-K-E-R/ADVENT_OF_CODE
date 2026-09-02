@@ -73,11 +73,7 @@ def check_specific_letter(password:str) -> bool:
 
     forbidden_letters = "iol"
 
-    if any(letter in password for letter in forbidden_letters):
-        return False
-
-    else:
-        return True
+    return any(letter in password for letter in forbidden_letters)
 
 
 def check_2_consecutive(password:str) -> bool:
@@ -106,15 +102,11 @@ def check_2_consecutive(password:str) -> bool:
     return False
 
 
-
 def check_password(password:str) -> bool:
 
     is_password_valid:bool = check_3_letters_serie(password) and check_specific_letter(password) and check_2_consecutive(password)
 
     return is_password_valid
-
-
-
 
 
 
@@ -132,9 +124,7 @@ def main() -> int:
         is_password_correct = check_password( password )
         
 
-    print(f"Working password: {password}")
-
-
+    print(f"Working password:\n{password}")
 
     return 0
 
