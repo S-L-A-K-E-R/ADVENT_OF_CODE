@@ -2,41 +2,53 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-and-run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Compile and Run all C programs in programs/
+      - name: Compile and run all C programs (C23)
+        shell: bash
         run: |
-          # Enable recursive globbing
-          shopt -s globstar
+          set -euo pipefail
 
-          cd programs
+          # Read every C source, including files in nested challenge directories.
+          mapfile -d '' c_files < <(find programs -type f -name '*.c' -print0 | sort -z)
 
-          # Check if any .c files exist under this folder
-          if ! ls **/*.c 1> /dev/null 2>&1; then
-            echo "No .c files found in 'programs'. Skipping."
+          if (( ${#c_files[@]} == 0 )); then
+            echo "No C files found in programs/. Skipping."
             exit 0
           fi
 
-          # Loop through each .c file
-          for c_file in **/*.c; do
-            # Create a unique executable name from the relative path
-            executable_name=$(echo "$c_file" | sed 's|/|_|g; s|\.c$||')_exec
+          # Ubuntu 24.04 runners include GCC 14, which supports C23.
+          gcc-14 --version
 
-            echo "---"
-            echo "Compiling: $c_file"
-            gcc "$c_file" -o "$executable_name"
+          # Keep generated binaries outside the repository.
+          build_dir="$(mktemp -d)"
+          trap 'rm -rf "$build_dir"' EXIT
 
-            echo "Running: ./${executable_name}"
-            ./"$executable_name"
-            echo "---"
+          index=0
+          for c_file in "${c_files[@]}"; do
+            executable="$build_dir/program_${index}"
+
+            echo "::group::Compiling $c_file"
+            gcc-14 -std=c23 -Wall -Wextra "$c_file" -o "$executable"
+            echo "::endgroup::"
+
+            # Challenges such as 2025 Day 1 open input.txt relative to the CWD.
+            echo "::group::Running $c_file"
+            (
+              cd "$(dirname "$c_file")"
+              "$executable"
+            )
+            echo "::endgroup::"
+
+            index=$((index + 1))
           done
