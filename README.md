@@ -4,15 +4,13 @@ My solutions to [Advent of Code](https://adventofcode.com/), written in **Python
 
 ## Progress
 
-Days with code currently archived in this repository. These counts show what's in the repo, rather than my official Advent of Code star total.
-
-| Year | Language | Days archived | Solutions |
-| :--- | :--- | ---: | :--- |
-| 2015 | Python | 12 / 25 | [Browse solutions](programs/2015/Python) |
-| 2016 | C | 1 / 25 | [Browse solutions](programs/2016/C) |
-| 2024 | Python | 5 / 25 | [Browse solutions](programs/2024/Python) |
-| 2025 | C | 1 / 25 | [Browse solutions](programs/2025) |
-| **Total** | | **19 days** | |
+| Year | Progress | Solutions |
+| :--- | ---: | :--- |
+| 2015 | 12 / 25 | [Browse solutions](programs/2015/Python) |
+| 2016 | 1 / 25 | [Browse solutions](programs/2016/C) |
+| 2024 | 5 / 25 | [Browse solutions](programs/2024/Python) |
+| 2025 | 1 / 25 | [Browse solutions](programs/2025) |
+| **Total** | **19 days** | |
 
 ## Special thanks
 
